@@ -1,0 +1,593 @@
+Q1: Prepare a database for an e-commerce company containing 
+following entities (Also draw an ER diagram):-
+
+Supplier, Customer, Product, Category, Order and Payment
+
+
+SQL> create table category (type_name varchar2(15),type_id 
+number(3) primary key);
+
+Table created.
+
+SQL> insert into category values('kitchen',555);
+
+1 row created.
+
+SQL> insert into category values('clothes',552);
+
+1 row created.
+
+SQL> insert into category values('furniture',556);
+
+1 row created.
+
+SQL> insert into category values('sports',553);
+
+1 row created.
+
+SQL> insert into category values('electronics',558);
+
+1 row created.
+
+SQL> select * from category;
+
+TYPE_NAME          TYPE_ID
+--------------- ----------
+kitchen                555
+clothes                552
+furniture              556
+sports                 553
+electronics            558
+
+
+
+
+SQL> create table payment (payment_mode varchar2(15),payment_id 
+number(3) primary key);
+
+Table created.
+
+
+SQL> insert into payment values('COD',101);
+
+1 row created.
+
+SQL> insert into payment values('Debit',102);
+
+1 row created.
+
+SQL> insert into payment values('Credit',103);
+
+1 row created.
+
+SQL> insert into payment values('Net banking',104);
+
+1 row created.
+
+SQL> select * from payment;
+
+PAYMENT_MODE    PAYMENT_ID
+--------------- ----------
+COD                    101
+Debit                  102
+Credit                 103
+Net banking            104
+
+
+
+SQL> create table supplier (sname varchar2(15),snum number(3) 
+primary key,city varchar2(15),commission number(3));
+
+Table created.
+
+
+SQL> insert into supplier values('Sam',201,'Delhi',12);
+
+1 row created.
+
+SQL> insert into supplier values('Kitti',202,'Noida',15);
+
+1 row created.
+
+SQL> insert into supplier values('Mitti',203,'Gurugram',18);
+
+1 row created.
+
+SQL> insert into supplier values('Rissu',204,'New Delhi',12);
+
+1 row created.
+
+SQL> insert into supplier values('Ramesh',205,'Delhi',14);
+
+1 row created.
+
+SQL> insert into supplier values('Prateek',206,'Noida',11);
+
+1 row created.
+
+SQL> insert into supplier values('Dinesh',207,'Dwarka',10);
+
+1 row created.
+
+SQL> select * from supplier;
+
+SNAME                 SNUM CITY            COMMISSION
+--------------- ---------- --------------- ----------
+Sam                    201 Delhi                   12
+Kitti                  202 Noida                   15
+Mitti                  203 Gurugram                18
+Rissu                  204 New Delhi               12
+Ramesh                 205 Delhi                   14
+Prateek                206 Noida                   11
+Dinesh                 207 Dwarka                  10
+
+7 rows selected.
+
+SQL> create table customer (cname varchar2(15),cnum number(3) 
+primary key,state varchar2(15),snum number(3) references supplier);
+
+Table created.
+
+
+SQL> insert into customer values('Pinku',301,'Delhi',201);
+
+1 row created.
+
+SQL> insert into customer values('Poonam',302,'New Delhi',201);
+
+1 row created.
+
+SQL> insert into customer values('Kartik',303,'Dwarka',207);
+
+1 row created.
+
+SQL> insert into customer values('Ganesh',304,'Gurugram',203);
+
+1 row created.
+
+SQL> insert into customer values('Gorry',305,'Noida',202);
+
+1 row created.
+
+SQL> insert into customer values('Hardik',306,'Delhi',204);
+
+1 row created.
+
+
+SQL> select * from customer;
+
+CNAME                 CNUM STATE                 SNUM
+--------------- ---------- --------------- ----------
+Pinku                  301 Delhi                  201
+Poonam                 302 New Delhi              201
+Kartik                 303 Dwarka                 207
+Ganesh                 304 Gurugram               203
+Gorry                  305 Noida                  202
+Hardik                 306 Delhi                  204
+
+6 rows selected.
+
+
+SQL> create table product (pid number(3) primary key,pname 
+varchar2(20),type_id number(3) references category);
+
+Table created.
+
+
+SQL> insert into product values(601,'Cup',555);
+
+1 row created.
+
+SQL> insert into product values(602,'Plates',555);
+
+1 row created.
+
+
+SQL> insert into product values(603,'Mixy',555);
+
+1 row created.
+
+SQL> insert into product values(604,'Shirt',552);
+
+1 row created.
+
+SQL> insert into product values(605,'Chair',556);
+
+1 row created.
+
+SQL> insert into product values(606,'Cricket bat',553);
+
+1 row created.
+
+SQL> insert into product values(607,'Fan',558);
+
+1 row created.
+
+SQL> insert into product values(608,'Bulb',558);
+
+1 row created.
+
+SQL> select * from product;
+
+       PID PNAME                   TYPE_ID
+---------- -------------------- ----------
+       601 Cup                         555
+       602 Plates                      555
+       603 Mixy                        555
+       604 Shirt                       552
+       605 Chair                       556
+       606 Cricket bat                 553
+       607 Fan                         558
+       608 Bulb                        558
+
+8 rows selected.
+
+
+SQL> create table order3(onum number(3) primary key,amount 
+number(8,2),odate date,payment_id number(3) references payment,
+pid number(3) references product,snum number(3) references s
+upplier,cnum number(3) references customer);
+
+Table created.
+
+
+SQL> alter session set nls_date_format ='dd/mm/yyyy';
+
+Session altered.
+
+SQL> insert into order3 values(401,12000,'2/6/2018',102,603,201,301);
+
+1 row created.
+
+
+SQL> insert into order3 values(402,6000,'3/7/2018',102,601,201,302);
+
+1 row created.
+
+SQL> insert into order3 values(403,8000,'10/7/2018',102,605,201,302);
+
+1 row created.
+
+SQL> insert into order3 values(404,10000,'28/8/2018',104,607,201,301);
+
+1 row created.
+
+SQL> insert into order3 values(405,12000,'14/3/2018',101,602,207,303);
+
+1 row created.
+
+SQL> insert into order3 values(406,11000,'23/3/2018',101,603,203,304);
+
+1 row created.
+
+SQL> insert into order3 values(407,900,'23/3/2018',103,604,202,305);
+
+1 row created.
+
+SQL> insert into order3 values(408,2000,'14/3/2018',103,606,202,305);
+
+1 row created.
+
+SQL> insert into order3 values(409,5000,'10/7/2018',102,607,204,306);
+
+1 row created.
+
+SQL> insert into order3 values(410,5000,'3/7/2018',102,603,204,306);
+
+1 row created.
+
+SQL> insert into order3 values(411,1400,'3/7/2018',104,605,204,306);
+
+1 row created.
+
+
+SQL> select * from order3;
+
+      ONUM     AMOUNT ODATE      PAYMENT_ID        PID       SNUM       CNUM
+---------- ---------- ---------- ---------- ---------- ---------- ----------
+       401      12000 02/06/2018        102        603        201        301
+       402       6000 03/07/2018        102        601        201        302
+       403       8000 10/07/2018        102        605        201        302
+       404      10000 28/08/2018        104        607        201        301
+       405      12000 14/03/2018        101        602        207        303
+       406      11000 23/03/2018        101        603        203        304
+       407        900 23/03/2018        103        604        202        305
+       408       2000 14/03/2018        103        606        202        305
+       409       5000 10/07/2018        102        607        204        306
+       410       5000 03/07/2018        102        603        204        306
+       411       1400 03/07/2018        104        605        204        306
+
+11 rows selected.
+
+
+
+And, Answer the queries that follow:-
+a)  Give a list of all customers whose name begins with ‘P’?
+
+SQL> select * from customer where cname like 'P%';
+
+CNAME                 CNUM STATE                 SNUM
+--------------- ---------- --------------- ----------
+Pinku                  301 Delhi                  201
+Poonam                 302 New Delhi              201
+
+
+b)  Display the names of suppliers who provide kitchen articles?
+
+
+SQL> select s.sname,p.pname,c.type_name from order3 o,
+supplier s,product p,category c where c.type_name = 'kitchen' 
+and s.snum = o.snum and p.pid = o.pid and p.type_id=c.type_id;
+
+SNAME           PNAME                TYPE_NAME
+--------------- -------------------- ---------------
+Sam             Mixy                 kitchen
+Sam             Cup                  kitchen
+Dinesh          Plates               kitchen
+Mitti           Mixy                 kitchen
+Rissu           Mixy                 kitchen
+
+
+SQL> select  distinct s.sname from order3 o,supplier s,
+product p,category c where c.type_name = 'kitchen' and 
+s.snum = o.snum and p.pid = o.pid and p.type_id=c.type_id;
+
+SNAME
+---------------
+Mitti
+Sam
+Rissu
+Dinesh
+
+c)  What was the total sale of the company in the month of March 
+2018?
+
+SQL> select sum(amount) "Sale in march,2018" from order3 where 
+extract(month from odate) = 3;
+
+Sale in march,2018
+------------------
+             25900
+
+
+d)  Find out each customer’s minimum and maximum order?
+
+SQL> select cnum,min(amount) "min order",max(amount) "max order" 
+from order3 group by cnum;
+
+      CNUM  min order  max order
+---------- ---------- ----------
+       303      12000      12000
+       306       1400       5000
+       301      10000      12000
+       304      11000      11000
+       302       6000       8000
+       305        900       2000
+
+6 rows selected.
+
+e)  What were the top selling products along with their 
+categories during the sale of JUNE-AUGUST 2018?
+
+SQL> select count(pid),type_name from (select o.pid,c.type_name from order3 o,category c,product p where extract(month from o.odate) >=6 and extract(month from o.odate) <= 8 and o.pid = p.pid and p.type_id = c.type_id ) group by pid,type_name order by count(pid);
+
+COUNT(PID) TYPE_NAME
+---------- ---------------
+         1 kitchen
+         2 furniture
+         2 electronics
+         2 kitchen
+
+
+SQL> select pid,count(pid),type_name from 
+(select o.pid,c.type_name from order3 o,category c,product p 
+where extract(month from o.odate) >=6 and 
+extract(month from o.odate) <= 8 and o.pid = p.pid and 
+p.type_id= c.type_id ) group by pid,type_name order by count(pid);
+
+       PID COUNT(PID) TYPE_NAME
+---------- ---------- ---------------
+       601          1 kitchen
+       605          2 furniture
+       607          2 electronics
+       603          2 kitchen
+
+SQL>
+
+f)  Display a list of customers who bought for more than 
+Rs. 10,000 in a month?
+
+
+SQL> select cnum, sum(amount),extract(month from odate) 
+from order3 group by cnum, extract(month from odate) having 
+sum(amount) > 10000;
+
+      CNUM SUM(AMOUNT) EXTRACT(MONTHFROMODATE)
+---------- ----------- -----------------------
+       306       11400                       7
+       304       11000                       3
+       302       14000                       7
+       301       12000                       6
+       303       12000                       3
+
+
+
+g)  List all orders with their order details 
+(name of buyer, mode of payment, products bought).
+
+SQL> select o.onum ,c.cname "buyer name",pay.payment_mode 
+"payment mode",p.pname "product bought" from order3 o,
+customer c,payment pay,product p where o.cnum = c.cnum and 
+o.payment_id = pay.payment_id and o.pid = p.pid;
+
+      ONUM buyer name      payment mode    product bought
+---------- --------------- --------------- --------------------
+       402 Poonam          Debit           Cup
+       405 Kartik          COD             Plates
+       410 Hardik          Debit           Mixy
+       406 Ganesh          COD             Mixy
+       401 Pinku           Debit           Mixy
+       407 Gorry           Credit          Shirt
+       411 Hardik          Net banking     Chair
+       403 Poonam          Debit           Chair
+       408 Gorry           Credit          Cricket bat
+       409 Hardik          Debit           Fan
+       404 Pinku           Net banking     Fan
+
+11 rows selected.
+
+h) List all customers according to their state/union territory 
+of their delivery address.
+
+
+SQL> select * from customer order by state;
+
+CNAME                 CNUM STATE                 SNUM
+--------------- ---------- --------------- ----------
+Pinku                  301 Delhi                  201
+Hardik                 306 Delhi                  204
+Kartik                 303 Dwarka                 207
+Ganesh                 304 Gurugram               203
+Poonam                 302 New Delhi              201
+Gorry                  305 Noida                  202
+
+6 rows selected.
+
+i)  Create a view containing the names of all the products and 
+their categories.
+
+
+SQL> create view view_ecomm as select p.pname,c.type_name from product p,category c where p.type_id = c.type_id;
+
+View created.
+
+SQL> select * from view_ecomm;
+
+PNAME                TYPE_NAME
+-------------------- ---------------
+Cup                  kitchen
+Plates               kitchen
+Mixy                 kitchen
+Shirt                clothes
+Chair                furniture
+Cricket bat          sports
+Fan                  electronics
+Bulb                 electronics
+
+8 rows selected.
+
+
+j)  Find out each customers highest and least chosen mode of 
+payment.
+
+
+k)  List the name of all suppliers who sell more than two 
+categories of products. 
+
+
+SQL> select sname from (select s.sname , c.type_name from 
+supplier s,category c,order3 o,product p where s.snum = o.snum 
+and p.pid = o.pid and p.type_id = c.type_id) group by sname 
+having count(distinct type_name)>2 ;
+
+SNAME
+---------------
+Sam
+Rissu
+
+
+SQL> select sname,type_name from (select s.sname , c.type_name from supplier s,category c,order3 o,product p where s.snum = o.snum and p.pid = o.pid and p.type_id = c.type_id) ;
+
+SNAME           TYPE_NAME
+--------------- ---------------
+Sam             electronics
+Sam             furniture
+Sam             kitchen
+Sam             kitchen
+Kitti           sports
+Kitti           clothes
+Mitti           kitchen
+Rissu           furniture
+Rissu           kitchen
+Rissu           electronics
+Dinesh          kitchen
+
+11 rows selected.
+
+
+l)  Prepare a list of least selling products for the last year.
+SQL> select pid,count(pid) from order3 group by pid order by 
+count(pid);
+
+       PID COUNT(PID)
+---------- ----------
+       601          1
+       606          1
+       604          1
+       602          1
+       605          2
+       607          2
+       603          3
+
+7 rows selected.
+
+m)  Select the total amount in orders for each customer for 
+whom this total is greater than the amount of the largest order 
+in the table.
+
+
+SQL> select cnum,sum(amount) from order3 group by cnum having 
+sum(amount) > (select max(amount) from order3);
+
+      CNUM SUM(AMOUNT)
+---------- -----------
+       301       22000
+       302       14000
+
+
+n)  Find out which customers produce largest and smallest orders 
+on each date.
+
+
+
+SQL> select max(amount),min(amount),odate from order3 group by 
+odate;
+
+MAX(AMOUNT) MIN(AMOUNT) ODATE
+----------- ----------- ---------
+       8000        5000 10-JUL-18
+      12000       12000 02-JUN-18
+      12000        2000 14-MAR-18
+      11000         900 23-MAR-18
+       6000        1400 03-JUL-18
+      10000       10000 28-AUG-18
+
+6 rows selected.
+
+
+
+
+
+
+
+
+creating database ////
+SQL> create user ecommerce identified by ecommerce;
+
+User created.
+
+SQL> grant create table to ecommerce;
+
+Grant succeeded.
+
+SQL> select username,account_status from dba_users where username = 'ecommerce';
+
+no rows selected
+
+SQL>
+
+connect;
+disconnect;
+
+
+dbms practical exam on 15 november having 2 problemss

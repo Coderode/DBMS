@@ -1,0 +1,206 @@
+Q11: Create a table ‘Emp’ with attributes ‘ename’,’ecity’,’salary’,
+’enumber’,’eaddress’,’depttname’.
+
+
+SQL> create table emp3 (ename varchar2(15),ecity varchar2(15),salary number(8,2),enumber number(3) primary key,eaddress varchar2(20),depttname varchar2(20));
+
+Table created.
+
+SQL> insert into emp3 values('John','Jaipur',20000,101,'rajasthan','IT');
+
+1 row created.
+
+SQL> insert into emp3 values('Mike','Hindon',24000,102,'rajasthan','IT');
+
+1 row created.
+
+SQL> insert into emp3 values('Mohan','Allahabad',8000,103,'UP','HR');
+
+1 row created.
+
+SQL> insert into emp3 values('Nilesh','Agra',5000,104,'UP','Technical');
+
+1 row created.
+
+SQL> insert into emp3 values('Ram','Bhopal',5000,105,'MP','Technical');
+
+1 row created.
+
+SQL> select * from emp3;
+
+ENAME           ECITY               SALARY    ENUMBER EADDRESS
+--------------- --------------- ---------- ---------- --------------------
+DEPTTNAME
+--------------------
+John            Jaipur               20000        101 rajasthan
+IT
+
+Mike            Hindon               24000        102 rajasthan
+IT
+
+Mohan           Allahabad             8000        103 UP
+HR
+
+
+ENAME           ECITY               SALARY    ENUMBER EADDRESS
+--------------- --------------- ---------- ---------- --------------------
+DEPTTNAME
+--------------------
+Nilesh          Agra                  5000        104 UP
+Technical
+
+Ram             Bhopal                5000        105 MP
+Technical
+
+
+SQL>
+
+
+Create another table ‘Company’ with attributes ‘cname’,  ccity’,
+’empnumber’ in the database ‘Employee’
+
+
+SQL> create table company (cname varchar2(20),ccity varchar2(20),empnumber number(3));
+
+Table created.
+
+SQL> insert into company values('IFCCO','Delhi',103);
+
+1 row created.
+
+SQL> insert into company values('NRP','Goa',104);
+
+1 row created.
+
+SQL> insert into company values('NSUI','Chennai',102);
+
+1 row created.
+
+SQL> select * from company;
+
+CNAME                CCITY                 EMPNUMBER
+-------------------- -------------------- ----------
+IFCCO                Delhi                       103
+NRP                  Goa                         104
+NSUI                 Chennai                     102
+
+
+
+Execute the following queries on above tables:-
+•	Create a view having ename and ecity.
+
+SQL> create view emp_view as select ename,ecity from emp3;
+
+View created.
+
+SQL> select * from emp_view;
+
+ENAME           ECITY
+--------------- ---------------
+John            Jaipur
+Mike            Hindon
+Mohan           Allahabad
+Nilesh          Agra
+Ram             Bhopal
+
+
+•	In the above view change the ecity to ‘Delhi’ where ename is 
+‘John’.
+
+SQL> update emp_view set ecity = 'Delhi' where ename ='John';
+
+1 row updated.
+
+SQL> select * from emp_view;
+
+ENAME           ECITY
+--------------- ---------------
+John            Delhi
+Mike            Hindon
+Mohan           Allahabad
+Nilesh          Agra
+Ram             Bhopal
+
+
+SQL> select * from emp3;
+
+ENAME           ECITY               SALARY    ENUMBER EADDRESS
+--------------- --------------- ---------- ---------- --------------------
+DEPTTNAME
+--------------------
+John            Delhi                20000        101 rajasthan
+IT
+
+Mike            Hindon               24000        102 rajasthan
+IT
+
+Mohan           Allahabad             8000        103 UP
+HR
+
+
+ENAME           ECITY               SALARY    ENUMBER EADDRESS
+--------------- --------------- ---------- ---------- --------------------
+DEPTTNAME
+--------------------
+Nilesh          Agra                  5000        104 UP
+Technical
+
+Ram             Bhopal                5000        105 MP
+Technical
+
+
+•	Create a view having attributes from both the tables.
+
+
+•	Update the above view and increase the salary of all employees 
+of IT department by Rs.1000.
+Now solve the following queries using PL/SQL:-
+•	Calculate the average salary from table ‘Emp’ and print 
+increase the salary if the average salary is less than 10,000.
+
+declare
+	avgsal number;
+begin
+	select avg(salary) into avgsal from emp3;
+	dbms_output.put_line('average salary : '||avgsal);
+	if(avgsal < 10000) then
+		update emp3 set salary=salary + 1000;
+	end if;
+end;
+/
+
+•	Print the deptno from the employee table using the case 
+statement if the deptname is ‘Technical’ then deptno is 1, if the 
+deptname is ‘HR’ then the deptno is 2 else deptno is 3.
+
+
+begin	
+	dbms_output.put_line('deptname\tdeptno');
+	for deptname in (select depttname from emp3)
+		loop
+			if(deptname = 'Technical') then 
+				dbms_output.put_line(deptname||'       1');
+			else if(deptname = 'HR') then
+				dbms_output.put_line(deptname||'       2');
+			else
+				dbms_output.put_line(deptname||'       3');
+			end if;
+		end loop;
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

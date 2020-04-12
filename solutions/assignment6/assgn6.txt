@@ -1,0 +1,128 @@
+Q1. Create customers table and have records:
+ID	NAME	AGE	ADDRESS	SALARY
+1	Ramesh	23	Allahabad 20000
+2	Suresh	22	Kanpur    22000
+3	Mahesh	24	Gaziabad  24000
+4	Chandan	25	Noida     26000
+5	Alex	21	Gurgaon	  28000
+6	Sunita	20	Delhi     30000
+
+
+
+SQL> create table customers6 (id number(2) primary key,name varchar2(15),
+age number(3),address varchar2(20),salary number(8,2));
+
+Table created.
+
+
+SQL> insert into customers6 values(1,'Ramesh',23,'Allahabad',20000);
+
+1 row created.
+
+SQL> insert into customers6 values(2,'Suresh',22,'Kanpur',22000);
+
+1 row created.
+
+SQL> insert into customers6 values(3,'Mahesh',24,'Gaziabad',24000);
+
+1 row created.
+
+SQL> insert into customers6 values(4,'Chandan',25,'Noida',26000);
+
+1 row created.
+
+SQL> insert into customers6 values(5,'Alex',21,'Gurgaon',28000);
+
+1 row created.
+
+SQL> insert into customers6 values(6,'Sunita',20,'Delhi',30000);
+
+1 row created.
+
+SQL> select * from customers6;
+
+        ID NAME                   AGE ADDRESS                  SALARY
+---------- --------------- ---------- -------------------- ----------
+         1 Ramesh                  23 Allahabad                 20000
+         2 Suresh                  22 Kanpur                    22000
+         3 Mahesh                  24 Gaziabad                  24000
+         4 Chandan                 25 Noida                     26000
+         5 Alex                    21 Gurgaon                   28000
+         6 Sunita                  20 Delhi                     30000
+
+6 rows selected.
+
+SQL>
+
+
+
+Write a program to retrieve the customer name and address using explicit 
+cursor.
+
+declare 
+	cursor c_cust is select name,address from customers6;
+	name customers6.name%Type;
+	address customers6.address%Type;
+begin
+	open c_cust;
+	if c_cust %ISOPEN then
+	loop
+		fetch c_cust into name,address;
+		exit when c_cust%NOTFOUND;
+		dbms_output.put_line('Name : '||name||'  ,Address: '||address);
+		
+	end loop;
+		close c_cust;
+	else
+		dbms_output.put_line('Unable to open cursor');
+	end if;
+end;
+/
+
+Q2. Write a program to create a row level trigger for the CUSTOMERS table(
+above) that would fire for INSERT or UPDATE or DELETE operations 
+performed on the CUSTOMERS table. This trigger will display the 
+salary difference between the old values and new values:
+
+
+create or replace trigger cust_trigger after update of salary
+on customers6 for each row
+begin
+	if:new.salary != :old.salary then
+		dbms_output.put_line('difference between old and new salary : '||(:new.salary-:old.salary));
+	end if;
+	
+end;
+/
+query:
+ update customers6 set salary = 2*salary where id=1;
+ 
+ 
+ 
+
+Q3. Write a PL/SQL function which will compute and return the 
+maximum of two values.
+
+declare 
+	num1 number;
+	num2 number;
+	num3 number;
+function maximum(x in number, y in number)
+return number is
+	m number;
+begin
+	if (x > y) then
+		m:=x;
+	else
+		m:=y;
+	end if;
+	return m;
+end;
+
+begin
+	num1:=&num1;
+	num2:=&num2;
+	num3:=maximum(num1,num2);
+	dbms_output.put_line(' Maximum of '||num1||','||num2||' is : ' || num3);
+end;
+/

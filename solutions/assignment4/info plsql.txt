@@ -1,0 +1,4 @@
+to PL SQL  file
+extension - .sql
+SQL>set serveroutput on;
+SQL>@C:\Users\hp\Desktop\sem3\dbms\files\assignment4\filename.sql

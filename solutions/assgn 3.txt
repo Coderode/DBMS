@@ -1,0 +1,1341 @@
+﻿dbms assignment 3 : 
+=========================================================
+
+
+Question 1:
+===========================================================
+
+SQL> create table salesmen(snum number(5) primary key,sname varchar2(15),city varchar2(15),commission number(3));
+
+Table created.
+
+
+SQL> insert into salesmen values(1001,'Piyush','London',12);
+
+1 row created.
+
+SQL> insert into salesmen values(1002,'Sejal','Surat',13);
+
+1 row created.
+
+SQL> insert into salesmen values(1004,'Miti','London',11);
+
+1 row created.
+
+SQL> insert into salesmen values(1007,'Rajesh','Baroda',15);
+
+1 row created.
+
+SQL> insert into salesmen values(1003,'Anand','New Delhi',10);
+
+1 row created.
+
+
+SQL> create table customers2(cnum number(5) primary key,cname varchar2(15),city varchar2(15),rating number(5),snum number(5) references salesmen);
+
+Table created.
+
+
+SQL> insert into customers2 values(2001,'Harsh','London',100,1001);
+
+1 row created.
+
+SQL> insert into customers2 values(2002,'Gita','Rome',200,1003);
+
+1 row created.
+
+SQL> insert into customers2 values(2003,'Lalit','Surat',200,1002);
+
+1 row created.
+
+SQL> insert into customers2 values(2004,'Govind','Bombay',300,1002);
+
+1 row created.
+
+SQL> insert into customers2 values(2006,'Chirag','London',100,1001);
+
+1 row created.
+
+SQL> insert into customers2 values(2008,'Chinmay','Surat',300,1007);
+
+1 row created.
+
+SQL> insert into customers2 values(2007,'Pratik','Rome',100,1004);
+
+1 row created.
+
+SQL>
+
+
+SQL> create table orders2(onum number(5),amount number(8,2),odate date,cnum number(5) references customers2(cnum),snum number(5) references salesmen(snum));
+
+Table created.
+
+
+SQL> alter session set nls_date_format='mm/dd/yyyy';
+
+Session altered.
+
+
+
+SQL> insert into orders2 values(3001,18.69,'10/03/1997',2008,1007);
+
+1 row created.
+
+SQL> insert into orders2 values(3003,767.19,'10/03/1997',2001,1001);
+
+1 row created.
+
+SQL> insert into orders2 values(3005,5160.45,'10/03/1997',2003,1002);
+
+1 row created.
+
+SQL> insert into orders2 values(3006,1098.16,'10/03/1997',2008,1007);
+
+1 row created.
+
+SQL> insert into orders2 values(3009,1713.23,'10/04/1997',2002,1003);
+
+1 row created.
+
+SQL> insert into orders2 values(3007,75.75,'10/04/1997',2004,1002);
+
+1 row created.
+
+SQL> insert into orders2 values(3008,4723.00,'10/05/1997',2006,1001);
+
+1 row created.
+
+SQL> insert into orders2 values(3010,1309.95,'10/06/1997',2004,1002);
+
+1 row created.
+
+SQL> insert into orders2 values(3011,9891.88,'10/06/1997',2006,1001);
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+
+
+SQL> select * from salesmen;
+
+      SNUM SNAME           CITY            COMMISSION
+---------- --------------- --------------- ----------
+      1001 Piyush          London                  12
+      1002 Sejal           Surat                   13
+      1004 Miti            London                  11
+      1007 Rajesh          Baroda                  15
+      1003 Anand           New Delhi               10
+
+SQL> select * from customers2;
+
+      CNUM CNAME           CITY                RATING       SNUM
+---------- --------------- --------------- ---------- ----------
+      2001 Harsh           London                 100       1001
+      2002 Gita            Rome                   200       1003
+      2003 Lalit           Surat                  200       1002
+      2004 Govind          Bombay                 300       1002
+      2006 Chirag          London                 100       1001
+      2008 Chinmay         Surat                  300       1007
+      2007 Pratik          Rome                   100       1004
+
+7 rows selected.
+
+SQL> select * from orders2;
+
+      ONUM     AMOUNT ODATE            CNUM       SNUM
+---------- ---------- ---------- ---------- ----------
+      3001      18.69 10/03/1997       2008       1007
+      3003     767.19 10/03/1997       2001       1001
+      3005    5160.45 10/03/1997       2003       1002
+      3006    1098.16 10/03/1997       2008       1007
+      3009    1713.23 10/04/1997       2002       1003
+      3007      75.75 10/04/1997       2004       1002
+      3008       4723 10/05/1997       2006       1001
+      3010    1309.95 10/06/1997       2004       1002
+      3011    9891.88 10/06/1997       2006       1001
+
+9 rows selected.
+========================================================================
+queries :
+=========================================================================
+Solve the following queries using above databases and group by clause.
+ Solve the following queries using above databases 
+1. Show the name of all customers with their salesman's name.
+SQL> select cname,sname from customers2, salesmen where 
+customers2.snum = salesmen.snum;
+
+CNAME           SNAME
+--------------- ---------------
+Harsh           Piyush
+Gita            Anand
+Lalit           Sejal
+Govind          Sejal
+Chirag          Piyush
+Chinmay         Rajesh
+Pratik          Miti
+
+7 rows selected.
+
+
+2. List all customers and salesmen who shared a same city.
+
+SQL> select customers2.cname,salesmen.sname,salesmen.city from customers2, 
+salesmen where customers2.city=salesmen.city;
+
+CNAME           SNAME           CITY
+--------------- --------------- ---------------
+Harsh           Miti            London
+Harsh           Piyush          London
+Lalit           Sejal           Surat
+Chirag          Miti            London
+Chirag          Piyush          London
+Chinmay         Sejal           Surat
+
+6 rows selected.
+
+
+3. List all orders with the names of their customer and salesman.
+
+SQL> select onum,cname,sname from orders2,customers2,salesmen where 
+orders2.cnum = customers2.cnum and orders2.snum = salesmen.snum order by onum;
+
+      ONUM CNAME           SNAME
+---------- --------------- ---------------
+      3001 Chinmay         Rajesh
+      3003 Harsh           Piyush
+      3005 Lalit           Sejal
+      3006 Chinmay         Rajesh
+      3007 Govind          Sejal
+      3008 Chirag          Piyush
+      3009 Gita            Anand
+      3010 Govind          Sejal
+      3011 Chirag          Piyush
+
+9 rows selected.
+
+4. List  all orders by the customers not located in the same  city  as their salesman.
+
+
+SQL> select orders2.onum,customers2.city "customer city" ,
+salesmen.city "salesmen city" from orders2,customers2,salesmen 
+where orders2.cnum = customers2.cnum and orders2.snum = salesmen.snum 
+and customers2.city != salesmen.city;
+
+      ONUM customer city   salesmen city
+---------- --------------- ---------------
+      3009 Rome            New Delhi
+      3010 Bombay          Surat
+      3007 Bombay          Surat
+      3006 Surat           Baroda
+      3001 Surat           Baroda
+
+
+5. List  all customers serviced by salespeople with  commission  above 12%.
+SQL> select customers2.cname,salesmen.sname,salesmen.commission "commission %" 
+from customers2,salesmen where salesmen.commission > 12 and 
+customers2.snum = salesmen.snum;
+
+CNAME           SNAME           commission %
+--------------- --------------- ------------
+Lalit           Sejal                     13
+Govind          Sejal                     13
+Chinmay         Rajesh                    15
+
+
+6. Calculate the amount of the salesman commission on each order by  a customer with rating above 100.
+
+SQL> select orders2.onum,orders2.snum,customers2.cnum,customers2.rating,
+(salesmen.commission * amount)/100 "salesman commission" from orders2,salesmen,
+customers2 where customers2.rating > 100 and orders2.snum = salesmen.snum and 
+orders2.cnum = customers2.cnum order by customers2.rating;
+
+      ONUM       SNUM       CNUM     RATING salesman commission
+---------- ---------- ---------- ---------- -------------------
+      3005       1002       2003        200            670.8585
+      3009       1003       2002        200             171.323
+      3001       1007       2008        300              2.8035
+      3006       1007       2008        300             164.724
+      3007       1002       2004        300              9.8475
+      3010       1002       2004        300            170.2935
+
+6 rows selected.
+
+
+
+
+
+7. Find  all  pairs  of customers having  the  same  rating  
+without duplication.
+
+SQL> select c1.cnum ,c2.cnum from customers2 c1,customers2 c2 where c1.rating = c2.rating and c1.snum > c2.snum;
+
+      CNUM       CNUM
+---------- ----------
+      2007       2001
+      2002       2003
+      2008       2004
+      2007       2006
+
+
+
+8. List  all  customers located in cities  where  salesman  Sejal 
+ has customers.
+ 
+SQL> select distinct c.cnum from customers2 c,salesmen s where c.city in (select c.city from customers2 c,salesmen s where c.snum =s.snum and s.sname = 'Sejal');
+
+      CNUM
+----------
+      2003
+      2004
+      2008
+
+SQL>
+
+9. Find  all pairs of customers served by a single salesman 
+ with  the salesman's name and no.
+ 
+10. List all salesmen who are living in the same city without 
+duplicate  rows.
+
+SQL> select s1.sname ,s2.sname from salesmen s1,salesmen s2 where s1.city =s2.city and s1.snum > s2.snum;
+
+SNAME           SNAME
+--------------- ---------------
+Miti            Piyush
+
+
+11. List all pairs of orders by a given customer with customer 
+name.
+
+select o1.onum,o2.onum,o1.cnum from orders2 o1,orders2 o2 group by  
+SQL> select orders2.onum,orders2.odate,orders2.amount,orders2.cnum,
+customers2.cname from orders2,customers2 where orders2.cnum = 
+customers2.cnum order by customers2.cnum;
+
+      ONUM ODATE         AMOUNT       CNUM CNAME
+---------- --------- ---------- ---------- ---------------
+      3003 03-OCT-97     767.19       2001 Harsh
+      3009 04-OCT-97    1713.23       2002 Gita
+      3005 03-OCT-97    5160.45       2003 Lalit
+      3007 04-OCT-97      75.75       2004 Govind
+      3010 06-OCT-97    1309.95       2004 Govind
+      3011 06-OCT-97    9891.88       2006 Chirag
+      3008 05-OCT-97       4723       2006 Chirag
+      3006 03-OCT-97    1098.16       2008 Chinmay
+      3001 03-OCT-97      18.69       2008 Chinmay
+
+9 rows selected.
+
+
+12. Produce the name and city of all the customers with the same  rating as Harsh.
+SQL> select cname ,city,rating from customers2 where rating = (select rating from customers2 where cname = 'Harsh');
+
+CNAME           CITY                RATING
+--------------- --------------- ----------
+Harsh           London                 100
+Chirag          London                 100
+Pratik          Rome                   100
+
+
+13. Extract all orders of Miti.
+
+SQL> select * from orders2 where orders2.snum = 
+(select snum from salesmen where sname = 'Miti');
+
+no rows selected
+
+SQL> select * from orders2 where snum = 
+(select snum from salesmen where sname = 'Piyush');
+
+      ONUM     AMOUNT ODATE           CNUM       SNUM
+---------- ---------- --------- ---------- ----------
+      3003     767.19 03-OCT-97       2001       1001
+      3008       4723 05-OCT-97       2006       1001
+      3011    9891.88 06-OCT-97       2006       1001
+
+SQL>
+
+14. Extract all orders of Baroda's salesmen.
+
+SQL> select * from orders2 where snum = 
+(select snum from salesmen where city = 'Baroda');
+
+      ONUM     AMOUNT ODATE           CNUM       SNUM
+---------- ---------- --------- ---------- ----------
+      3001      18.69 03-OCT-97       2008       1007
+      3006    1098.16 03-OCT-97       2008       1007
+
+SQL>
+
+
+15. Find all orders of the salesman who services 'Harsh'.
+SQL> select * from orders2 where snum = (select snum from customers2 
+where cname = 'Harsh');
+
+      ONUM     AMOUNT ODATE           CNUM       SNUM
+---------- ---------- --------- ---------- ----------
+      3003     767.19 03-OCT-97       2001       1001
+      3008       4723 05-OCT-97       2006       1001
+      3011    9891.88 06-OCT-97       2006       1001
+
+
+
+16. List all orders that are greater than the average of October 4,1997.
+SQL> select * from orders2 where amount > (select avg(amount) from orders2 group by odate having odate = '04-oct-1997');
+
+      ONUM     AMOUNT ODATE           CNUM       SNUM
+---------- ---------- --------- ---------- ----------
+      3005    5160.45 03-OCT-97       2003       1002
+      3006    1098.16 03-OCT-97       2008       1007
+      3009    1713.23 04-OCT-97       2002       1003
+      3008       4723 05-OCT-97       2006       1001
+      3010    1309.95 06-OCT-97       2004       1002
+      3011    9891.88 06-OCT-97       2006       1001
+
+6 rows selected.
+
+
+17. Find the average commission of salesmen in London
+
+SQL> select avg(commission) "avg comm(%) of sal in london" from 
+salesmen group by city having city = 'London';
+
+avg comm(%) of sal in london
+----------------------------
+                        11.5
+
+
+
+18. Find all orders attributed to salesmen in 'London' using  both  the subquery and join methods.
+using subquery
+
+SQL> select * from orders2 where snum in (select snum from salesmen where city = 'London');
+
+      ONUM     AMOUNT ODATE           CNUM       SNUM
+---------- ---------- --------- ---------- ----------
+      3003     767.19 03-OCT-97       2001       1001
+      3008       4723 05-OCT-97       2006       1001
+      3011    9891.88 06-OCT-97       2006       1001
+
+SQL>
+using join method
+
+SQL> select orders2.onum,orders2.amount,orders2.snum from 
+orders2,salesmen where orders2.snum = salesmen.snum and salesmen.city 
+= 'London';
+
+      ONUM     AMOUNT       SNUM
+---------- ---------- ----------
+      3003     767.19       1001
+      3008       4723       1001
+      3011    9891.88       1001
+
+19. List the commission of all salesmen serving customers in 'London'.
+
+SQL> select snum,sname,commission from salesmen where 
+snum in (select snum from customers2 where city = 'London');
+
+      SNUM SNAME           COMMISSION
+---------- --------------- ----------
+      1001 Piyush                  12
+
+
+20. Find all customers whose cnum is 1000 above than the snum of Sejal.
+SQL> select cnum,cname from customers2 where cnum > (
+select snum from salesmen where sname = 'Sejal')+1000;
+
+      CNUM CNAME
+---------- ---------------
+      2003 Lalit
+      2004 Govind
+      2006 Chirag
+      2007 Pratik
+      2008 Chinmay
+
+
+21. Count the no. of customers with the rating above than the average of 'Surat'.
+SQL> select count(cnum) from customers2 where rating > (
+select avg(rating) from customers2 group by city having city = 'Surat');
+
+COUNT(CNUM)
+-----------
+          2
+		  
+		  
+22. List all orders of the customer 'Chirag'.
+
+SQL> select * from orders2 where cnum = (select cnum from customers2 where cname = 'Chirag');
+
+      ONUM     AMOUNT ODATE           CNUM       SNUM
+---------- ---------- --------- ---------- ----------
+      3008       4723 05-OCT-97       2006       1001
+      3011    9891.88 06-OCT-97       2006       1001
+
+
+23. Produce the name and rating of all customers who have above  average orders.
+
+SQL> select cname , rating from customers2 where cnum in 
+(select cnum from orders2 where amount > (select avg(amount) from orders2));
+
+CNAME               RATING
+--------------- ----------
+Chirag                 100
+Lalit                  200
+
+24. Select  the total amount in orders for each salesman for  whom  this total is 
+greater than the amount of the largest order in the table.
+
+SQL> select sum(amount) , snum from orders2 group by snum having sum(amount)>(select max(amount) from orders2);
+
+SUM(AMOUNT)       SNUM
+----------- ----------
+   15382.07       1001
+
+
+25. List  the  name and number of all salesmen who has  more  than  one customer.
+
+SQL> select snum,count(cnum) from customers2 group by snum having count(cnum)>1;
+
+      SNUM COUNT(CNUM)
+---------- -----------
+      1001           2
+      1002           2
+
+
+SQL> select sname,snum from salesmen where snum in ( select snum from customers2 
+group by snum having count(cnum)>1);
+
+SNAME                 SNUM
+--------------- ----------
+Piyush                1001
+Sejal                 1002
+
+
+
+26. Find all orders with amount atleast equal to the average amounts for their customers.
+SQL> select * from orders2 where amount >= (select avg(amount) from orders2);
+
+      ONUM     AMOUNT ODATE           CNUM       SNUM
+---------- ---------- --------- ---------- ----------
+      3005    5160.45 03-OCT-97       2003       1002
+      3008       4723 05-OCT-97       2006       1001
+      3011    9891.88 06-OCT-97       2006       1001
+
+
+27. Calculate  the total amount ordered on each day  eliminating  those days  
+where  the  total amount was not atleast  Rs.  2000  above  
+the maximum amount of that day.
+
+
+SQL> select sum(o1.amount) "total amount",o1.odate from orders2 o1 group by 
+o1.odate having sum(o1.amount) > 2000+(select max(o2.amount) 
+from orders2 o2 group by o2.odate having o1.odate=o2.odate);
+
+no rows selected
+
+
+28. Select  the name and number of all salesmen who have  customers 
+ in their cities who they do not service.
+ 
+SQL> select s.snum,s.sname from customers2 c,salesmen s where 
+s.city = c.city and s.snum != c.snum;
+
+      SNUM SNAME
+---------- ---------------
+      1004 Miti
+      1004 Miti
+      1002 Sejal
+
+
+29. Find  the  number of all the  salesmen  having  multiple  
+customers using EXIST.
+
+
+SQL> select snum from (select snum from customers2 group by snum having count(cnum) >1 and exists(select snum from customers2 group by snum having count(cnum) >1 ));
+
+      SNUM
+----------
+      1001
+      1002
+
+
+30. Find the name,number and city of all the salesmen  
+having  multiple customers using EXIST.
+
+31. Find  the name and number of all the salesmen who  
+serve  only  one customer.
+
+SQL> select snum,sname from salesmen where snum in (select snum from customers2 group by snum having count(cnum) = 1);
+
+      SNUM SNAME
+---------- ---------------
+      1003 Anand
+      1007 Rajesh
+      1004 Miti
+
+
+32. Find all salesmen with more than one current order.
+
+SQL> select snum,count(onum) "no.of orders" from orders2 group 
+by snum having count(onum) > 1;
+
+      SNUM no.of orders
+---------- ------------
+      1001            3
+      1002            3
+      1007            2
+
+
+33. Display the customer information if and only if one or more 
+of  the customers in are located in 'Surat.
+
+
+SQL> select * from customers2 where exists (select * from customers2 group by city having count(cnum)  >= 1 and city = 'Surat');
+
+      CNUM CNAME           CITY                RATING       SNUM
+---------- --------------- --------------- ---------- ----------
+      2001 Harsh           London                 100       1001
+      2002 Gita            Rome                   200       1003
+      2003 Lalit           Surat                  200       1002
+      2004 Govind          Bombay                 300       1002
+      2006 Chirag          London                 100       1001
+      2008 Chinmay         Surat                  300       1007
+      2007 Pratik          Rome                   100       1004
+
+7 rows selected.
+
+
+SQL> select * from customers2 where exists (select * from customers2 group by city having count(cnum)  >= 1 and city = 'Surat') and city = 'Surat';
+
+      CNUM CNAME           CITY                RATING       SNUM
+---------- --------------- --------------- ---------- ----------
+      2003 Lalit           Surat                  200       1002
+      2008 Chinmay         Surat                  300       1007
+
+SQL>
+
+34. Find  all salesmen who have customers with more  than  
+one  current order.
+SQL> select snum,count(onum) from orders2 group by cnum,snum having count(onum) > 1 ;
+
+      SNUM COUNT(ONUM)
+---------- -----------
+      1007           2
+      1001           2
+      1002           2
+
+
+35. Find all salesmen who have customers with rating > 300 using  
+EXIST and using join.
+
+
+SQL> select customers2.snum,salesmen.sname from customers2,
+salesmen where exists(select snum from customers2 where rating = 
+300) and rating = 300 and salesmen.snum = customers2.snum;
+
+      SNUM SNAME
+---------- ---------------
+      1002 Sejal
+      1007 Rajesh
+
+
+36. Find all orders with amounts smaller than any amount for a  
+customer in 'London'.
+
+
+SQL> select * from orders2 where amount < 
+(select min(orders2.amount) from orders2 , customers2 
+where orders2.cnum = customers2.cnum and city = 'London');
+
+      ONUM     AMOUNT ODATE           CNUM       SNUM
+---------- ---------- --------- ---------- ----------
+      3001      18.69 03-OCT-97       2008       1007
+      3007      75.75 04-OCT-97       2004       1002
+
+
+
+37. Find all the customers who have greater rating than every  
+customer in 'Rome'.
+
+
+SQL> select * from customers2 where rating > (select max(rating) 
+from customers2 where city = 'Rome');
+
+      CNUM CNAME           CITY                RATING       SNUM
+---------- --------------- --------------- ---------- ----------
+      2004 Govind          Bombay                 300       1002
+      2008 Chinmay         Surat                  300       1007
+	  
+
+38. Select all customers whose rating doesn't match with any 
+rating  of customer of 'Surat'.
+
+SQL> select * from customers2 where rating not in (select rating from customers2 where city = 'Surat');
+
+      CNUM CNAME           CITY                RATING       SNUM
+---------- --------------- --------------- ---------- ----------
+      2007 Pratik          Rome                   100       1004
+      2006 Chirag          London                 100       1001
+      2001 Harsh           London                 100       1001
+
+
+39. List all customers whose ratings are equal to or greater than 
+ANY of  'Sejal'.
+
+SQL> select * from customers2 where rating >= (select max(rating) from customers2,salesmen  where salesmen.sname = 'Sejal' and customers2.snum = salesmen.snum);
+
+      CNUM CNAME           CITY                RATING       SNUM
+---------- --------------- --------------- ---------- ----------
+      2004 Govind          Bombay                 300       1002
+      2008 Chinmay         Surat                  300       1007
+
+SQL> select * from customers2 where rating >= (select min(rating) from customers2,salesmen  where salesmen.sname = 'Sejal' and customers2.snum = salesmen.snum);
+
+      CNUM CNAME           CITY                RATING       SNUM
+---------- --------------- --------------- ---------- ----------
+      2002 Gita            Rome                   200       1003
+      2003 Lalit           Surat                  200       1002
+      2004 Govind          Bombay                 300       1002
+      2008 Chinmay         Surat                  300       1007
+
+
+40. List  all orders for amount greater than any for the  
+customers  in  London.
+
+
+SQL> select * from orders2 where amount > 
+(select max(orders2.amount) from orders2 , customers2 where 
+customers2.city = 'London' and orders2.cnum = customers2.cnum);
+
+no rows selected
+
+
+41. Find all salesmen and customers located in London.
+
+SQL> select sname "salesmen and customers" from salesmen where city = 'London' UNION select cname "salesmen and customers" from customers2 where city='London';
+
+salesmen and cu
+---------------
+Chirag
+Harsh
+Miti
+Piyush
+
+
+42. Find out which salesman produce largest and smallest orders 
+on  each date.
+
+
+SQL> select snum,amount "smallest amount",odate from orders2 
+where amount in (select min(amount) from orders2 group by odate);
+
+      SNUM smallest amount ODATE
+---------- --------------- ---------
+      1007           18.69 03-OCT-97
+      1002           75.75 04-OCT-97
+      1001            4723 05-OCT-97
+      1002         1309.95 06-OCT-97
+
+SQL> select snum,amount "smallest amount",odate from orders2 
+where amount in (select min(amount) from orders2 group by odate) 
+UNION select snum , amount "largest amount" ,odate from orders2 
+where amount in (select max(amount) from orders2 group by odate);
+
+      SNUM smallest amount ODATE
+---------- --------------- ---------
+      1001            4723 05-OCT-97
+      1001         9891.88 06-OCT-97
+      1002           75.75 04-OCT-97
+      1002         1309.95 06-OCT-97
+      1002         5160.45 03-OCT-97
+      1003         1713.23 04-OCT-97
+      1007           18.69 03-OCT-97
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+
+Question 2: 
+ 
+=======================================================================
+
+SQL> create table departments (department_id number(3) primary key,department_name varchar2(15));
+
+Table created.
+
+
+SQL> insert into departments values(20,'Accounting');
+
+1 row created.
+
+SQL> insert into departments values(30,'IT');
+
+1 row created.
+
+SQL> insert into departments values(40,'Marketting');
+
+1 row created.
+
+SQL> select * from departments;
+
+DEPARTMENT_ID DEPARTMENT_NAME
+------------ ---------------
+          20 Accounting
+          30 IT
+          40 Marketting
+
+
+
+
+
+SQL> create table employees (employee_id number(4) primary key,first_name varchar2(15),last_name varchar2(15),salary number(7),department_id number(3) references departments);
+
+Table created.
+
+
+
+SQL> insert into employees values(111,'Steven','King',24000,20);
+
+1 row created.
+
+SQL> insert into employees values(112,'John','Hopkings',12000,30);
+
+1 row created.
+
+SQL> insert into employees values(113,'Alexander','Roy',10000,20);
+
+1 row created.
+
+SQL> insert into employees values(114,'Carlie','Nayer',23000,20);
+
+1 row created.
+
+SQL> insert into employees values(115,'Julies','Ceaser',8000,40);
+
+1 row created.
+
+SQL> insert into employees values(116,'James','Mathew',9000,30);
+
+1 row created.
+
+SQL> insert into employees values(117,'Andrew','Matt',5500,30);
+
+1 row created.
+
+SQL> insert into employees values(118,'Sunil','Pal',25000,20);
+
+1 row created.
+
+SQL> insert into employees values(119,'Roshan','Kumar',15000,40);
+
+1 row created.
+
+SQL> insert into employees values(120,'Rahul','Kapoor',16000,40);
+
+1 row created.
+
+SQL> select * from employees;
+
+EMPLOYEE_ID FIRST_NAME      LAST_NAME           SALARY DEPARTMENT_ID
+----------- --------------- --------------- ---------- ------------
+        111 Steven          King                 24000           20
+        112 John            Hopkings             12000           30
+        113 Alexander       Roy                  10000           20
+        114 Carlie          Nayer                23000           20
+        115 Julies          Ceaser                8000           40
+        116 James           Mathew                9000           30
+        117 Andrew          Matt                  5500           30
+        118 Sunil           Pal                  25000           20
+        119 Roshan          Kumar                15000           40
+        120 Rahul           Kapoor               16000           40
+
+10 rows selected.
+
+
+
+SQL> alter table employees rename column deparment_id to department_id;
+
+Table altered.
+
+SQL> alter table departments rename column deparment_id to department_id;
+
+Table altered.
+
+
+======================================================
+queries
+==================================================================
+
+Perform the following operations using nested queries/sub-queries:
+a)	Find the names (first name as well as last name) and 
+salaries of the employees who have higher salary than the 
+employee whose last name is Hopkings.
+
+SQL> select first_name,last_name,salary from employees where 
+salary > (select salary from employees where last_name = 
+'Hopkings');
+
+FIRST_NAME      LAST_NAME           SALARY
+--------------- --------------- ----------
+Steven          King                 24000
+Carlie          Nayer                23000
+Sunil           Pal                  25000
+Roshan          Kumar                15000
+Rahul           Kapoor               16000
+
+
+b)	Find the names (first and last name both) of all the 
+employees who work in the IT department.
+
+SQL> select first_name,last_name from employees where department_id = (select department_id from departments where department_name = 'IT');
+
+FIRST_NAME      LAST_NAME
+--------------- ---------------
+John            Hopkings
+James           Mathew
+Andrew          Matt
+
+SQL> select e.first_name , e.last_name from employees e,departments d where e.department_id=d.department_id and d.department_name = 'IT';
+
+FIRST_NAME      LAST_NAME
+--------------- ---------------
+John            Hopkings
+James           Mathew
+Andrew          Matt
+
+SQL> select employees.first_name , employees.last_name from employees ,departments where employees.department_id=departments.department_id and departments.department_name = 'IT';
+
+FIRST_NAME      LAST_NAME
+--------------- ---------------
+John            Hopkings
+James           Mathew
+Andrew          Matt
+
+
+c)	 Find the names (first_name, last_name), salary of the 
+employees whose salary is greater than the average salary.
+SQL> select first_name,last_name,salary from employees 
+where salary > (select avg(salary) from employees);
+
+FIRST_NAME      LAST_NAME           SALARY
+--------------- --------------- ----------
+Steven          King                 24000
+Carlie          Nayer                23000
+Sunil           Pal                  25000
+Roshan          Kumar                15000
+Rahul           Kapoor               16000
+
+SQL> select avg(salary) from employees;
+
+AVG(SALARY)
+-----------
+      14750
+
+
+d)	Find the names (first_name, last_name), salary of the 
+employees who earn more than the average salary and who 
+works in any of the IT departments.
+
+SQL> select e.first_name , e.last_name,e.salary from employees e,
+departments d where e.department_id=d.department_id and 
+d.department_name = 'IT' and e.salary > (select avg(salary) 
+from employees);
+
+no rows selected
+
+
+e)	Find the details of the employees who earn the same 
+salary as the minimum salary for all departments.
+
+SQL> select * from employees where salary in (select min(salary) from employees group by department_id);
+
+EMPLOYEE_ID FIRST_NAME      LAST_NAME           SALARY DEPARTMENT_ID
+----------- --------------- --------------- ---------- -------------
+        113 Alexander       Roy                  10000            20
+        115 Julies          Ceaser                8000            40
+        117 Andrew          Matt                  5500            30
+
+
+f)	Find the details of the employees whose salary is 
+greater than average salary of all department.
+
+SQL> select * from employees where salary > 
+(select max(avg(salary)) from employees group by department_id);
+
+EMPLOYEE_ID FIRST_NAME      LAST_NAME           SALARY DEPARTMENT_ID
+----------- --------------- --------------- ---------- -------------
+        111 Steven          King                 24000            20
+        114 Carlie          Nayer                23000            20
+        118 Sunil           Pal                  25000            20
+
+SQL> select avg(salary) from employees group by department_id;
+
+AVG(SALARY)
+-----------
+ 8833.33333
+      20500
+      13000
+
+
+
+
+//////////////////////////////////////////////////////////////////////
+Question 3:
+
+======================================================================
+
+
+SQL> create table customers3(id number(3) primary key,name varchar2(15),age number(3),address varchar2(15),salary number(7,2));
+
+Table created.
+
+SQL> insert into customers3 values(001,'Ramesh',32,'Ahmedabad',2000.00);
+
+1 row created.
+
+SQL> insert into customers3 values(002,'Khalid',25,'Delhi',1500.00);
+
+1 row created.
+
+SQL> insert into customers3 values(003,'Kaushik',23,'Kota',2000.00);
+
+1 row created.
+
+SQL> insert into customers3 values(004,'Chaitali',25,'Mumbai',6500.00);
+
+1 row created.
+
+SQL> insert into customers3 values(005,'Hardik',27,'Bhopal',8500.00);
+
+1 row created.
+
+SQL> insert into customers3 values(006,'Komal',22,'MP',4500.00);
+
+1 row created.
+
+SQL> insert into customers3 values(007,'Muffy',24,'Indore',10000.00);
+
+1 row created.
+
+SQL> select * from customers3;
+
+        ID NAME                   AGE ADDRESS             SALARY
+---------- --------------- ---------- --------------- ----------
+         1 Ramesh                  32 Ahmedabad             2000
+         2 Khalid                  25 Delhi                 1500
+         3 Kaushik                 23 Kota                  2000
+         4 Chaitali                25 Mumbai                6500
+         5 Hardik                  27 Bhopal                8500
+         6 Komal                   22 MP                    4500
+         7 Muffy                   24 Indore               10000
+
+7 rows selected.
+======================================================
+Queries:
+=======================================================
+Perform the following operations on the above table:
+a)	Create a view called view1 on Customers table 
+that should include ID, NAME and AGE from Customers.
+SQL> create view view1 as select id,name,age from customers3;
+
+View created.
+
+SQL> select * from view1;
+
+        ID NAME                   AGE
+---------- --------------- ----------
+         1 Ramesh                  32
+         2 Khalid                  25
+         3 Kaushik                 23
+         4 Chaitali                25
+         5 Hardik                  27
+         6 Komal                   22
+         7 Muffy                   24
+
+7 rows selected.
+
+
+b)	Create a view called view2 on Customers table 
+that should include the records of Customers whose salaries 
+are greater than 5000.
+
+SQL> create view view2 as select * from customers3 where salary > 5000;
+
+View created.
+
+SQL> select * from view2;
+
+        ID NAME                   AGE ADDRESS             SALARY
+---------- --------------- ---------- --------------- ----------
+         4 Chaitali                25 Mumbai                6500
+         5 Hardik                  27 Bhopal                8500
+         7 Muffy                   24 Indore               10000
+
+SQL>
+
+ 
+c)	Insert the following records of customers in the view1:
+	ID		     NAME          	          AGE
+	010		     Fazil			   27
+	014		     Shoaib		  	   31
+	016		     John			   NULL
+	Show the results of View1 as well as the base table Customers after insertion operation.
+
+
+SQL> insert into view1 (id,name,age) values(010,'Fazil',27);
+
+1 row created.
+
+SQL> insert into view1 (id,name,age) values(014,'Shoaib',31);
+
+1 row created.
+
+SQL> insert into view1 (id,name,age) values(016,'John',NULL);
+
+1 row created.
+
+SQL> select * from view1;
+
+        ID NAME                   AGE
+---------- --------------- ----------
+         1 Ramesh                  32
+         2 Khalid                  25
+         3 Kaushik                 23
+         4 Chaitali                25
+         5 Hardik                  27
+         6 Komal                   22
+         7 Muffy                   24
+        10 Fazil                   27
+        14 Shoaib                  31
+        16 John
+
+10 rows selected.
+
+SQL> select * from customers3;
+
+        ID NAME                   AGE ADDRESS             SALARY
+---------- --------------- ---------- --------------- ----------
+         1 Ramesh                  32 Ahmedabad             2000
+         2 Khalid                  25 Delhi                 1500
+         3 Kaushik                 23 Kota                  2000
+         4 Chaitali                25 Mumbai                6500
+         5 Hardik                  27 Bhopal                8500
+         6 Komal                   22 MP                    4500
+         7 Muffy                   24 Indore               10000
+        10 Fazil                   27
+        14 Shoaib                  31
+        16 John
+
+10 rows selected.
+
+
+d)	Change the name of customer Komal to ABC by using view1. Display 
+the results of view1 as well as the base table Customers.
+
+SQL> update view1 set name = 'ABC' where name='Komal';
+
+1 row updated.
+
+SQL> select * from view1;
+
+        ID NAME                   AGE
+---------- --------------- ----------
+         1 Ramesh                  32
+         2 Khalid                  25
+         3 Kaushik                 23
+         4 Chaitali                25
+         5 Hardik                  27
+         6 ABC                     22
+         7 Muffy                   24
+        10 Fazil                   27
+        14 Shoaib                  31
+        16 John
+
+10 rows selected.
+
+SQL> select * from customers3;
+
+        ID NAME                   AGE ADDRESS             SALARY
+---------- --------------- ---------- --------------- ----------
+         1 Ramesh                  32 Ahmedabad             2000
+         2 Khalid                  25 Delhi                 1500
+         3 Kaushik                 23 Kota                  2000
+         4 Chaitali                25 Mumbai                6500
+         5 Hardik                  27 Bhopal                8500
+         6 ABC                     22 MP                    4500
+         7 Muffy                   24 Indore               10000
+        10 Fazil                   27
+        14 Shoaib                  31
+        16 John
+
+10 rows selected.
+
+
+e)	Modify the salary and age of Muffy in view2 to 15000 and 26 respectively.
+
+SQL> update view2 set salary = 15000 ,age = 26 where name = 'Muffy';
+
+1 row updated.
+
+SQL> select * from view2;
+
+        ID NAME                   AGE ADDRESS             SALARY
+---------- --------------- ---------- --------------- ----------
+         4 Chaitali                25 Mumbai                6500
+         5 Hardik                  27 Bhopal                8500
+         7 Muffy                   26 Indore               15000
+
+SQL> select * from view1;
+
+        ID NAME                   AGE
+---------- --------------- ----------
+         1 Ramesh                  32
+         2 Khalid                  25
+         3 Kaushik                 23
+         4 Chaitali                25
+         5 Hardik                  27
+         6 ABC                     22
+         7 Muffy                   26
+        10 Fazil                   27
+        14 Shoaib                  31
+        16 John
+
+10 rows selected.
+
+SQL> select * from customers3;
+
+        ID NAME                   AGE ADDRESS             SALARY
+---------- --------------- ---------- --------------- ----------
+         1 Ramesh                  32 Ahmedabad             2000
+         2 Khalid                  25 Delhi                 1500
+         3 Kaushik                 23 Kota                  2000
+         4 Chaitali                25 Mumbai                6500
+         5 Hardik                  27 Bhopal                8500
+         6 ABC                     22 MP                    4500
+         7 Muffy                   26 Indore               15000
+        10 Fazil                   27
+        14 Shoaib                  31
+        16 John
+
+10 rows selected.
+
+
+f)	Delete a record from view1 whose ID is 004. Display the results of 
+view1, view2 and the base table Customers.
+
+SQL> delete from view1 where id = 004;
+
+1 row deleted.
+
+SQL> select * from view1;
+
+        ID NAME                   AGE
+---------- --------------- ----------
+         1 Ramesh                  32
+         2 Khalid                  25
+         3 Kaushik                 23
+         5 Hardik                  27
+         6 ABC                     22
+         7 Muffy                   26
+        10 Fazil                   27
+        14 Shoaib                  31
+        16 John
+
+9 rows selected.
+
+SQL> select * from view2;
+
+        ID NAME                   AGE ADDRESS             SALARY
+---------- --------------- ---------- --------------- ----------
+         5 Hardik                  27 Bhopal                8500
+         7 Muffy                   26 Indore               15000
+
+SQL> select * from customers3;
+
+        ID NAME                   AGE ADDRESS             SALARY
+---------- --------------- ---------- --------------- ----------
+         1 Ramesh                  32 Ahmedabad             2000
+         2 Khalid                  25 Delhi                 1500
+         3 Kaushik                 23 Kota                  2000
+         5 Hardik                  27 Bhopal                8500
+         6 ABC                     22 MP                    4500
+         7 Muffy                   26 Indore               15000
+        10 Fazil                   27
+        14 Shoaib                  31
+        16 John
+
+9 rows selected.
+
+SQL>
+g)	Destroy the structure of view2.
+     drop view view2;  //delete the view
+
+h)	Create a view called view3 on Customers table with name and age.
+ Add check option on age to be not null.
+
+SQL> create view view3 as select name , age from customers3 where age > 0;
+
+View created.
+
+SQL> select * from view3;
+
+NAME                   AGE
+--------------- ----------
+Ramesh                  32
+Khalid                  25
+Kaushik                 23
+Hardik                  27
+ABC                     22
+Muffy                   26
+Fazil                   27
+Shoaib                  31
+Chaitali                25
+
+9 rows selected.
+
+
+
+i)	Insert a record in view3 (‘Rohan’, NULL) and (‘Joe’, 42).
+ Display the results of view3 and Customers table.
+
+SQL> insert into view3 values('Rohan',NULL);
+insert into view3 values('Rohan',NULL)
+*
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("SYSTEM"."CUSTOMERS3"."ID")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
